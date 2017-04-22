@@ -15,85 +15,85 @@ homeassistant:
 
   # Weather
 
-  - entity_id: sensor.pws_alerts
-    friendly_name: Alerts
+    sensor.pws_alerts:
+      friendly_name: Alerts
 
-  - entity_id: sensor.pws_dewpoint_c
-    friendly_name: Dewpoint
-    icon: mdi:water
+    sensor.pws_dewpoint_c:
+      friendly_name: Dewpoint
+      icon: mdi:water
 
-  - entity_id: sensor.pws_feelslike_c
-    friendly_name: Feels
+    sensor.pws_feelslike_c:
+      friendly_name: Feels
 
-  - entity_id: sensor.pws_heat_index_c
-    friendly_name: Heat Index
+    sensor.pws_heat_index_c:
+      friendly_name: Heat Index
 
-  - entity_id: sensor.pws_precip_1hr_metric
-    friendly_name: Rain 1h
-    icon: mdi:weather-rainy
+    sensor.pws_precip_1hr_metric:
+      friendly_name: Rain 1h
+      icon: mdi:weather-rainy
 
-  - entity_id: sensor.pws_precip_today_metric
-    friendly_name: Rain Today
-    icon: mdi:weather-rainy
+    sensor.pws_precip_today_metric:
+      friendly_name: Rain Today
+      icon: mdi:weather-rainy
 
-  - entity_id: sensor.pws_pressure_mb
-    friendly_name: Pressure
-    icon: mdi:gauge
+    sensor.pws_pressure_mb:
+      friendly_name: Pressure
+      icon: mdi:gauge
 
-  - entity_id: sensor.pws_pressure_trend
-    friendly_name: Pressure Trend
-    icon: mdi:gauge
+    sensor.pws_pressure_trend:
+      friendly_name: Pressure Trend
+      icon: mdi:gauge
 
-  - entity_id: sensor.pws_relative_humidity
-    friendly_name: Humidity
-    icon: mdi:water-percent
+    sensor.pws_relative_humidity:
+      friendly_name: Humidity
+      icon: mdi:water-percent
 
-  - entity_id: sensor.pws_solarradiation
-    friendly_name: Radiation
-    icon: mdi:white-balance-sunny
+    sensor.pws_solarradiation:
+      friendly_name: Radiation
+      icon: mdi:white-balance-sunny
 
-  - entity_id: sensor.pws_UV
-    friendly_name: UV
-    icon: mdi:white-balance-sunny
+    sensor.pws_UV:
+      friendly_name: UV
+      icon: mdi:white-balance-sunny
 
-  - entity_id: sensor.pws_visibility_km
-    friendly_name: Visibility
-    icon: mdi:eye
+    sensor.pws_visibility_km:
+      friendly_name: Visibility
+      icon: mdi:eye
 
-  - entity_id: sensor.pws_weather
-    friendly_name: Weather
+    sensor.pws_weather:
+      friendly_name: Weather
 
-  - entity_id: sensor.pws_wind_degrees
-    friendly_name: Wind Angle
-    icon: mdi:weather-windy
+    sensor.pws_wind_degrees:
+      friendly_name: Wind Angle
+      icon: mdi:weather-windy
 
-  - entity_id: sensor.pws_wind_dir
-    friendly_name: Wind Direction
-    icon: mdi:weather-windy
+    sensor.pws_wind_dir:
+      friendly_name: Wind Direction
+      icon: mdi:weather-windy
 
-  - entity_id: sensor.pws_wind_gust_kph
-    friendly_name: Wind Gust
-    icon: mdi:weather-windy
+    sensor.pws_wind_gust_kph:
+      friendly_name: Wind Gust
+      icon: mdi:weather-windy
 
-  - entity_id: sensor.pws_wind_kph
-    friendly_name: Wind
-    icon: mdi:weather-windy
+    sensor.pws_wind_kph:
+      friendly_name: Wind
+      icon: mdi:weather-windy
 
-  - entity_id: sensor.pws_temp_c
-    friendly_name: Temp
-    icon: mdi:temperature-celsius
+    sensor.pws_temp_c:
+      friendly_name: Temp
+      icon: mdi:temperature-celsius
 
 
-  # Rpi2
-  
-  - entity_id: sensor.received_eth0
-    friendly_name: Net In
+    # Rpi2
+    
+    sensor.received_eth0:
+      friendly_name: Net In
 
-  - entity_id: sensor.sent_eth0
-    friendly_name: Net Out
+    sensor.sent_eth0:
+      friendly_name: Net Out
 
-  - entity_id: sensor.disk_free_
-    friendly_name: Disk Free
+    sensor.disk_free_:
+      friendly_name: Disk Free
 
 
 
@@ -325,16 +325,3 @@ scene:
     entities:
       group.bedroom: on
 
-script:
-
-  restart_ha:
-    alias: Restart Home Assistant
-    sequence:
-      - alias: Restart HA
-        service: homeassistant.restart
-
-  reload_automations:
-    alias: Reload Automations
-    sequence:
-      - alias: Reload-Automations
-        service: automation.reload
