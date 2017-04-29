@@ -13,6 +13,14 @@ homeassistant:
 
   customize:
 
+  # Groups
+    group.lights_off_startup:
+      hidden: true
+
+    group.limitless_v6:
+      hidden: true
+      
+
   # Weather
 
     sensor.pws_alerts:
@@ -126,6 +134,31 @@ group:
     entities:
       - light.safari_glow
 
+  kitchen:
+    name: Kitchen
+    entities:
+      - light.kitchen
+
+  other_room:
+    name: Other Room ™
+    entities:
+      - light.other_room
+
+  limitless_v6:
+    name: LimitlessLED v6 Lights
+    control: hidden
+    entities:
+      - light.safari_glow
+      - light.kitchen
+      - light.other_room
+
+  lights_off_startup:
+    name: Lights that are off on startup
+    control: hidden
+    entities:
+      - light.kitchen
+      - light.other_room
+      
   bedroom:
     name: Bedroom
     entities:
@@ -160,7 +193,7 @@ http:
 updater:
 
 # Discover some devices automatically
-discovery:
+# discovery:
 
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
@@ -171,6 +204,7 @@ recorder:
 # Enables support for tracking state changes over time.
 history:
 
+config:
 
 # View all events in a logbook
 logbook:
@@ -228,65 +262,56 @@ sensor:
 tts:
   platform: google
 
-# automation:
-# - alias: "Lights at sundown"
-#   trigger:
-#     platform: sun
-#     event: sunset
-#     offset: "-01:10:00"
-#   condition:
-#     condition: state
-#     entity_id: device_tracker.miha_hammerhead
-#     state: home
-#   action:
-#     service: homeassistant.turn_on
-#     entity_id: group.living_room
-#     data:
-#       transition: 900
-
-# - alias: "Lights if overcast"
-#   trigger:
-#     platform: state
-#     entity_id: sensor.pws_weather
-#     state: Overcast
-#   condition:
-#     condition: state
-#     entity_id: device_tracker.miha_hammerhead
-#     state: home
-#   action:
-#     service: homeassistant.turn_on
-#     entity_id: group.living_room
-#     data:
-#       transition: 120
+automation:
+  - alias: "Lights on start"
+    trigger:
+      platform: homeassistant
+      event: start
+    action:
+      - service: homeassistant.turn_on
+        entity_id: group.limitless_v6
+        data:
+          color_temp: 400
+      - service: homeassistant.turn_off
+        entity_id: group.lights_off_startup
 
 
 light:
   platform: limitlessled
   bridges:
-  - host: !secret limitless_v5_ip
-    port: 8899
-    version: 5
-    groups:
-    - number: 1
-      type: rgbw
-      name: Tall Top
-    - number: 2
-      type: rgbw
-      name: Tall Bottom
-    - number: 3
-      type: rgbw
-      name: Death Star
-  - host: !secret limitless_v6_ip
-    port: 5987
-    version: 6
-    groups:
-    - number: 1
-      type: rgbww
-      name: Safari Glow
+
+    - host: !secret limitless_v6_ip
+      port: 5987
+      version: 6
+      groups:
+      - number: 1
+        type: rgbww
+        name: Safari Glow
+      - number: 2
+        type: rgbww
+        name: Kitchen
+      - number: 3
+        type: rgbww
+        name: Other Room
+
+    - host: !secret limitless_v5_ip
+      port: 8899
+      version: 5
+      groups:
+      - number: 1
+        type: rgbw
+        name: Tall Top
+      - number: 2
+        type: rgbw
+        name: Tall Bottom
+      - number: 3
+        type: rgbw
+        name: Death Star
+
 
 mqtt:
   broker: !secret mqtt_broker
-  port: 8883
+  port: 1883
   client_id: home-assistant
   keepalive: 60
   username: !secret mqtt_user
