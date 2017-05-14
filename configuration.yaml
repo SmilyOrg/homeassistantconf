@@ -212,6 +212,9 @@ logbook:
 # Track the sun
 sun:
 
+# Google Home
+emulated_hue:
+
 
 
 # ███████╗███████╗███╗   ██╗███████╗ ██████╗ ██████╗ ███████╗
@@ -220,8 +223,35 @@ sun:
 # ╚════██║██╔══╝  ██║╚██╗██║╚════██║██║   ██║██╔══██╗╚════██║
 # ███████║███████╗██║ ╚████║███████║╚██████╔╝██║  ██║███████║
 # ╚══════╝╚══════╝╚═╝  ╚═══╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
-                                                           
+
+binary_sensor:
+  - platform: mqtt
+    name: "Switch 1"
+    state_topic: "switch/1"
+
 sensor:
+
+  - platform: mqtt
+    state_topic: "envsense/sensors"
+    name: "Temperature"
+    unit_of_measurement: "°C"
+    value_template: '{{ value_json.temperature }}'
+    expire_after: 300
+
+  - platform: mqtt
+    state_topic: "envsense/sensors"
+    name: "Humidity"
+    unit_of_measurement: "%"
+    value_template: '{{ value_json.humidity }}'
+    expire_after: 300
+
+  - platform: mqtt
+    state_topic: "envsense/sensors"
+    name: "Pressure"
+    unit_of_measurement: "hPa"
+    value_template: '{{ value_json.pressure }}'
+    expire_after: 300
+
 
   - platform: wunderground
     api_key: !secret wunderground_key
@@ -274,6 +304,15 @@ automation:
           color_temp: 400
       - service: homeassistant.turn_off
         entity_id: group.lights_off_startup
+  
+  - alias: "Toggle light on light switch"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.switch_1
+        state: "on"
+    action:
+      service: light.toggle
+      entity_id: group.bedroom
 
 
 light:
