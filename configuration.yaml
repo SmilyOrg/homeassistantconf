@@ -17,7 +17,7 @@ homeassistant:
     group.lights_off_startup:
       hidden: true
 
-    group.limitless_v6:
+    group.limitless:
       hidden: true
       
 
@@ -113,6 +113,35 @@ homeassistant:
 #  ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝     ╚══════╝
                                                    
 group:
+  travel:
+    name: Commute
+    entities:
+      - sensor.ost_to_pots_next
+
+  living_room:
+    name: Living Room
+    entities:
+      - light.safari_glow
+      - switch.hexacompy_monitors
+      - light.tall_top
+      - light.tall_bottom
+
+  kitchen:
+    name: Kitchen
+    entities:
+      - light.kitchen
+
+  other_room:
+    name: Other Room ™
+    entities:
+      - light.other_room
+      
+  bedroom:
+    name: Bedroom
+    entities:
+      - light.death_star
+      - light.infinity
+
   weather:
     name: Weather
     entities:
@@ -124,31 +153,24 @@ group:
       - sensor.pws_visibility_km
       - sensor.pws_pressure_mb
 
-  travel:
-    name: Commute
+  rpi2:
+    name: Raspberry Pi 2
     entities:
-      - sensor.ost_to_pots_next
+      - sensor.cpu_use
+      - sensor.disk_free_
+      - sensor.ram_free
+      - sensor.received_eth0
+      - sensor.sent_eth0
 
-  living_room:
-    name: Living Room
-    entities:
-      - light.safari_glow
-
-  kitchen:
-    name: Kitchen
-    entities:
-      - light.kitchen
-
-  other_room:
-    name: Other Room ™
-    entities:
-      - light.other_room
-
-  limitless_v6:
-    name: LimitlessLED v6 Lights
+  limitless:
+    name: LimitlessLED Lights
     control: hidden
     entities:
       - light.safari_glow
+      - light.tall_top
+      - light.tall_bottom
+      - light.death_star
+      - light.infinity
       - light.kitchen
       - light.other_room
 
@@ -158,22 +180,7 @@ group:
     entities:
       - light.kitchen
       - light.other_room
-      
-  bedroom:
-    name: Bedroom
-    entities:
-      - light.death_star
-      - light.tall_top
-      - light.tall_bottom
-
-  rpi2:
-    name: Raspberry Pi 2
-    entities:
-      - sensor.cpu_use
-      - sensor.disk_free_
-      - sensor.ram_free
-      - sensor.received_eth0
-      - sensor.sent_eth0
+      - light.bedroom
 
 
 
@@ -213,7 +220,24 @@ logbook:
 sun:
 
 # Google Home
-emulated_hue:
+# emulated_hue:
+
+# apiai:
+#   intents:
+#     smarthome.lights.switch.on:
+#       speech: Turned on {{ room }} lights
+#       async_action: True
+#       action:
+#         service: light.turn_on
+#         data_template:
+#           entity_id: "group.{{ room | replace(' ', '_') }}"        
+#     smarthome.lights.switch.off:
+#       speech: Turned off {{ room }} lights
+#       async_action: True
+#       action:
+#         service: light.turn_off
+#         data_template:
+#           entity_id: "group.{{ room | replace(' ', '_') }}"
 
 
 
@@ -250,6 +274,13 @@ sensor:
     name: "Pressure"
     unit_of_measurement: "hPa"
     value_template: '{{ value_json.pressure }}'
+    expire_after: 300
+
+  - platform: mqtt
+    state_topic: "envsense/sensors"
+    name: "Light"
+    unit_of_measurement: "%"
+    value_template: '{{ value_json.light }}'
     expire_after: 300
 
 
@@ -299,7 +330,7 @@ automation:
       event: start
     action:
       - service: homeassistant.turn_on
-        entity_id: group.limitless_v6
+        entity_id: group.limitless
         data:
           color_temp: 400
       - service: homeassistant.turn_off
@@ -314,38 +345,70 @@ automation:
       service: light.toggle
       entity_id: group.bedroom
 
+  # - alias: "Turn on lights on Hexacompy wakeup"
+  #   trigger:
+  #     - platform: state
+  #       entity_id: switch.hexacompy_monitors
+  #       state: "on"
+  #   action:
+  #     service: light.turn_on
+  #     entity_id: light.safari_glow
+
+switch:
+  - platform: mqtt
+    name: "Hexacompy Monitors"
+    command_topic: "hexacompy/monitor/all/power/command"
+    state_topic: "hexacompy/monitor/all/power/state"
 
 light:
-  platform: limitlessled
-  bridges:
 
-    - host: !secret limitless_v6_ip
-      port: 5987
-      version: 6
-      groups:
-      - number: 1
-        type: rgbww
-        name: Safari Glow
-      - number: 2
-        type: rgbww
-        name: Kitchen
-      - number: 3
-        type: rgbww
-        name: Other Room
+  - platform: mqtt
+    name: "Dell U2515H"
+    command_topic: "hexacompy/monitor/U2515H/power/command"
+    state_topic: "hexacompy/monitor/U2515H/power/state"
+    brightness_command_topic: "hexacompy/monitor/U2515H/brightness/command"
+    brightness_state_topic: "hexacompy/monitor/U2515H/brightness/state"
 
-    - host: !secret limitless_v5_ip
-      port: 8899
-      version: 5
-      groups:
-      - number: 1
-        type: rgbw
-        name: Tall Top
-      - number: 2
-        type: rgbw
-        name: Tall Bottom
-      - number: 3
-        type: rgbw
-        name: Death Star
+  - platform: mqtt
+    name: "Samsung 226BW"
+    command_topic: "hexacompy/monitor/MEDEL/power/command"
+    state_topic: "hexacompy/monitor/MEDEL/power/state"
+    brightness_command_topic: "hexacompy/monitor/MEDEL/brightness/command"
+    brightness_state_topic: "hexacompy/monitor/MEDEL/brightness/state"
+
+  - platform: limitlessled
+    bridges:
+
+      - host: !secret limitless_v6_ip
+        port: 5987
+        version: 6
+        groups:
+        - number: 1
+          type: rgbww
+          name: Safari Glow
+        - number: 2
+          type: rgbww
+          name: Kitchen
+        - number: 3
+          type: rgbww
+          name: Other Room
+
+      - host: !secret limitless_v5_ip
+        port: 8899
+        version: 5
+        groups:
+        - number: 1
+          type: rgbw
+          name: Tall Top
+        - number: 2
+          type: rgbw
+          name: Tall Bottom
+        - number: 3
+          type: rgbw
+          name: Death Star
+        - number: 4
+          type: rgbw
+          name: Infinity
 
 
 mqtt:
