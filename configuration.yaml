@@ -19,7 +19,18 @@ homeassistant:
 
     group.limitless:
       hidden: true
-      
+
+    binary_sensor.bottom_left:
+      hidden: true
+
+    binary_sensor.bottom_right:
+      hidden: true
+
+    binary_sensor.top_left:
+      hidden: true
+
+    binary_sensor.top_right:
+      hidden: true
 
   # Weather
 
@@ -121,7 +132,7 @@ group:
   living_room:
     name: Living Room
     entities:
-      - light.safari_glow
+      - light.safari
       - switch.hexacompy_monitors
       - light.tall_top
       - light.tall_bottom
@@ -141,6 +152,7 @@ group:
     entities:
       - light.death_star
       - light.infinity
+      - light.bed_strip
 
   weather:
     name: Weather
@@ -166,11 +178,12 @@ group:
     name: LimitlessLED Lights
     control: hidden
     entities:
-      - light.safari_glow
+      - light.safari
       - light.tall_top
       - light.tall_bottom
       - light.death_star
       - light.infinity
+      - light.bed_strip
       - light.kitchen
       - light.other_room
 
@@ -178,9 +191,9 @@ group:
     name: Lights that are off on startup
     control: hidden
     entities:
-      - light.kitchen
-      - light.other_room
-      - light.bedroom
+      - group.kitchen
+      - group.other_room
+      - group.bedroom
 
 
 
@@ -207,6 +220,11 @@ conversation:
 
 recorder:
   db_url: !secret db_url
+
+influxdb:
+  host: !secret influx_host
+  username: !secret influx_username
+  password: !secret influx_password
 
 # Enables support for tracking state changes over time.
 history:
@@ -249,39 +267,48 @@ sun:
 # ╚══════╝╚══════╝╚═╝  ╚═══╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
 
 binary_sensor:
+
   - platform: mqtt
-    name: "Switch 1"
-    state_topic: "switch/1"
+    name: "Top Right"
+    state_topic: "switch/topRight"
+
+  - platform: mqtt
+    name: "Bottom Right"
+    state_topic: "switch/bottomRight"
+
+  - platform: mqtt
+    name: "Top Left"
+    state_topic: "switch/topLeft"
+
+  - platform: mqtt
+    name: "Bottom Left"
+    state_topic: "switch/bottomLeft"
 
 sensor:
 
   - platform: mqtt
-    state_topic: "envsense/sensors"
-    name: "Temperature"
+    state_topic: "devices/envsense/temperature/value"
+    name: "Temp"
     unit_of_measurement: "°C"
-    value_template: '{{ value_json.temperature }}'
-    expire_after: 300
+    # expire_after: 300
 
   - platform: mqtt
-    state_topic: "envsense/sensors"
+    state_topic: "devices/envsense/humidity/value"
     name: "Humidity"
     unit_of_measurement: "%"
-    value_template: '{{ value_json.humidity }}'
-    expire_after: 300
+    # expire_after: 300
 
   - platform: mqtt
-    state_topic: "envsense/sensors"
+    state_topic: "devices/envsense/pressure/value"
     name: "Pressure"
     unit_of_measurement: "hPa"
-    value_template: '{{ value_json.pressure }}'
-    expire_after: 300
+    # expire_after: 300
 
   - platform: mqtt
-    state_topic: "envsense/sensors"
+    state_topic: "devices/envsense/light/value"
     name: "Light"
     unit_of_measurement: "%"
-    value_template: '{{ value_json.light }}'
-    expire_after: 300
+    # expire_after: 300
 
 
   - platform: wunderground
@@ -332,18 +359,65 @@ automation:
       - service: homeassistant.turn_on
         entity_id: group.limitless
         data:
-          color_temp: 400
+          color_temp: 254
+      - service: homeassistant.turn_on
+        entity_id: light.bed_strip
+        data:
+          color_name: orange
       - service: homeassistant.turn_off
         entity_id: group.lights_off_startup
   
-  - alias: "Toggle light on light switch"
+  - alias: "Bedroom lights on"
     trigger:
       - platform: state
-        entity_id: binary_sensor.switch_1
-        state: "on"
+        entity_id: binary_sensor.top_left
+        from: "off"
+        to: "on"
+    action:
+      service: light.turn_on
+      entity_id: group.bedroom
+
+  - alias: "Bedroom lights off"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bottom_left
+        from: "off"
+        to: "on"
+    action:
+      service: light.turn_off
+      entity_id: group.bedroom
+
+  - alias: "Bedroom infinity light toggle"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.top_right
+        from: "off"
+        to: "on"
     action:
       service: light.toggle
-      entity_id: group.bedroom
+      entity_id: light.infinity
+
+  - alias: "Bedroom bed strip toggle"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bottom_right
+        from: "off"
+        to: "on"
+    action:
+      service: light.toggle
+      entity_id: light.bed_strip
+
+  - alias: "Long bottom press sleep time"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bottom_left, binary_sensor.bottom_right
+        from: "off"
+        to: "on"
+        for:
+          seconds: 2
+    action:
+      service: scene.turn_on
+      entity_id: scene.sleep
 
   # - alias: "Turn on lights on Hexacompy wakeup"
   #   trigger:
@@ -352,7 +426,7 @@ automation:
   #       state: "on"
   #   action:
   #     service: light.turn_on
-  #     entity_id: light.safari_glow
+  #     entity_id: light.safari
 
 switch:
   - platform: mqtt
@@ -362,19 +436,19 @@ switch:
 
 light:
 
-  - platform: mqtt
-    name: "Dell U2515H"
-    command_topic: "hexacompy/monitor/U2515H/power/command"
-    state_topic: "hexacompy/monitor/U2515H/power/state"
-    brightness_command_topic: "hexacompy/monitor/U2515H/brightness/command"
-    brightness_state_topic: "hexacompy/monitor/U2515H/brightness/state"
+  # - platform: mqtt
+  #   name: "Dell U2515H"
+  #   command_topic: "hexacompy/monitor/U2515H/power/command"
+  #   state_topic: "hexacompy/monitor/U2515H/power/state"
+  #   brightness_command_topic: "hexacompy/monitor/U2515H/brightness/command"
+  #   brightness_state_topic: "hexacompy/monitor/U2515H/brightness/state"
 
-  - platform: mqtt
-    name: "Samsung 226BW"
-    command_topic: "hexacompy/monitor/MEDEL/power/command"
-    state_topic: "hexacompy/monitor/MEDEL/power/state"
-    brightness_command_topic: "hexacompy/monitor/MEDEL/brightness/command"
-    brightness_state_topic: "hexacompy/monitor/MEDEL/brightness/state"
+  # - platform: mqtt
+  #   name: "Samsung 226BW"
+  #   command_topic: "hexacompy/monitor/MEDEL/power/command"
+  #   state_topic: "hexacompy/monitor/MEDEL/power/state"
+  #   brightness_command_topic: "hexacompy/monitor/MEDEL/brightness/command"
+  #   brightness_state_topic: "hexacompy/monitor/MEDEL/brightness/state"
 
   - platform: limitlessled
     bridges:
@@ -385,13 +459,17 @@ light:
         groups:
         - number: 1
           type: rgbww
-          name: Safari Glow
+          name: Safari
         - number: 2
           type: rgbww
           name: Kitchen
         - number: 3
           type: rgbww
           name: Other Room
+        - number: 4
+          type: rgbww
+          name: Bed Strip
+          fade: on
 
       - host: !secret limitless_v5_ip
         port: 8899
@@ -409,6 +487,7 @@ light:
         - number: 4
           type: rgbw
           name: Infinity
+          fade: on
 
 
 mqtt:
@@ -442,12 +521,13 @@ mqtt:
 scene:
   - name: Bed Time
     entities:
+      group.all_lights: off
+      group.all_switches: off
       group.bedroom: on
-      group.living_room: off
   - name: Sleep
     entities:
-      group.bedroom: off
-      group.living_room: off
+      group.all_lights: off
+      group.all_switches: off
   - name: Morning
     entities:
       group.bedroom: on
