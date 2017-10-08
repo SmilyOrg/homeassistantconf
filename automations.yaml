@@ -1,0 +1,100 @@
+- id: radiator_off
+  alias: "Radiator off at night"
+  trigger:
+    platform: time
+    at: '00:00:01'
+  action:
+    - service: switch.turn_off
+      entity_id: switch.radiator
+
+- id: radiator_on
+  alias: "Radiator on in the morning"
+  trigger:
+    platform: time
+    at: '06:00:00'
+  action:
+    - service: switch.turn_on
+      entity_id: switch.radiator
+
+- id: start_lights_on
+  alias: "Lights on start"
+  trigger:
+    platform: homeassistant
+    event: start
+  action:
+    - service: homeassistant.turn_on
+      entity_id: group.limitless
+      data:
+        color_temp: 254
+    - service: homeassistant.turn_on
+      entity_id: light.bed_strip
+      data:
+        color_name: orange
+    - service: homeassistant.turn_off
+      entity_id: group.lights_off_startup
+
+- id: bedroom_on
+  alias: "Bedroom lights on"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.top_left
+      from: "off"
+      to: "on"
+  action:
+    service: light.turn_on
+    entity_id: group.bedroom
+
+- id: bedroom_off
+  alias: "Bedroom lights off"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.bottom_left
+      from: "off"
+      to: "on"
+  action:
+    service: light.turn_off
+    entity_id: group.bedroom
+
+- id: bedroom_infinity_on
+  alias: "Bedroom infinity light toggle"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.top_right
+      from: "off"
+      to: "on"
+  action:
+    service: light.toggle
+    entity_id: light.infinity
+
+- id: bedroom_infinity_off
+  alias: "Bedroom bed strip toggle"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.bottom_right
+      from: "off"
+      to: "on"
+  action:
+    service: light.toggle
+    entity_id: light.bed_strip
+
+- id: sleep_time
+  alias: "Long bottom press sleep time"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.bottom_left, binary_sensor.bottom_right
+      from: "off"
+      to: "on"
+      for:
+        seconds: 2
+  action:
+    service: scene.turn_on
+    entity_id: scene.sleep
+
+# - alias: "Turn on lights on Hexacompy wakeup"
+#   trigger:
+#     - platform: state
+#       entity_id: switch.hexacompy_monitors
+#       to: "on"
+#   action:
+#     service: light.turn_on
+#     entity_id: light.safari
