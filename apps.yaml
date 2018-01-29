@@ -1,0 +1,11 @@
+hello_world:
+  module: hello
+  class: HelloWorld
+
+weatherinfo:
+  module: weatherinfo
+  class: WeatherInfo
+
+screenautoadjust:
+  module: screenautoadjust
+  class: ScreenAutoAdjust

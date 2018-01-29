@@ -1,0 +1,7 @@
+AppDaemon:
+  logfile: STDOUT
+  threads: 10
+
+HASS:
+  ha_url: !secret api_url
+  ha_key: !secret api_password

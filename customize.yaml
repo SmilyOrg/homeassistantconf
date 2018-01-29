@@ -88,6 +88,99 @@ sensor.pws_temp_c:
   friendly_name: Temp
   icon: mdi:temperature-celsius
 
+# Dark Sky
+
+sensor.dark_sky_summary:
+  hidden: true
+
+sensor.dark_sky_icon:
+  hidden: true
+
+sensor.dark_sky_nearest_storm_distance:
+  hidden: true
+
+sensor.dark_sky_precip_type:
+  hidden: true
+
+sensor.dark_sky_precip_intensity:
+  hidden: true
+
+sensor.dark_sky_precip_probability:
+  hidden: true
+
+sensor.dark_sky_temperature:
+  hidden: true
+
+sensor.dark_sky_apparent_temperature:
+  hidden: true
+
+sensor.dark_sky_dew_point:
+  hidden: true
+
+sensor.dark_sky_wind_speed:
+  hidden: true
+
+sensor.dark_sky_wind_bearing:
+  hidden: true
+
+sensor.dark_sky_pressure:
+  hidden: true
+
+sensor.dark_sky_visibility:
+  hidden: true
+
+sensor.dark_sky_humidity:
+  hidden: true
+
+sensor.dark_sky_cloud_cover:
+  hidden: true
+
+sensor.dark_sky_minutely_summary:
+  hidden: true
+
+sensor.dark_sky_hourly_summary:
+  hidden: true
+
+sensor.dark_sky_daily_summary:
+  hidden: true
+
+sensor.dark_sky_temperature_min:
+  hidden: true
+
+sensor.dark_sky_temperature_max:
+  hidden: true
+
+sensor.dark_sky_apparent_temperature_min:
+  hidden: true
+
+sensor.dark_sky_apparent_temperature_max:
+  hidden: true
+
+sensor.dark_sky_precip_intensity_max:
+  hidden: true
+
+sensor.dark_sky_cloud_coverage:
+  hidden: true
+
+sensor.dark_sky_daily_high_apparent_temperature:
+  hidden: true
+
+sensor.dark_sky_daily_low_apparent_temperature:
+  hidden: true
+
+sensor.dark_sky_daily_high_temperature:
+  hidden: true
+
+sensor.dark_sky_daily_low_temperature:
+  hidden: true
+
+sensor.dark_sky_daily_max_precip_intensity:
+  hidden: true
+
+sensor.dark_sky_precip:
+  hidden: true
+
+
 
 # Rpi2
 

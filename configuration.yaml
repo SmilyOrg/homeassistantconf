@@ -43,6 +43,7 @@ group:
     name: Work Room
     entities:
       - light.work_room
+      - light.hexacompy_case
       - switch.hexacompy_monitors
       
   bedroom:
@@ -81,14 +82,14 @@ group:
     name: LimitlessLED Lights
     control: hidden
     entities:
-      - light.safari
-      - light.tall_top
-      - light.tall_bottom
-      - light.death_star
+      # - light.safari
+      # - light.tall_top
+      # - light.tall_bottom
+      # - light.death_star
       - light.infinity
       - light.bed_strip
       - light.kitchen
-      - light.work_room
+      # - light.work_room
 
   lights_off_startup:
     name: Lights that are off on startup
@@ -187,6 +188,12 @@ binary_sensor:
     name: "Bottom Left"
     state_topic: "switch/bottomLeft"
 
+  - platform: mqtt
+    name: "InfoMatrix Online"
+    state_topic: "devices/infomatrix/$online"
+    payload_on: 'true'
+    payload_off: 'false'
+
 sensor:
 
   - platform: mqtt
@@ -213,6 +220,10 @@ sensor:
     unit_of_measurement: "%"
     # expire_after: 300
 
+  - platform: mqtt
+    state_topic: "devices/plantsense/moisture/value"
+    name: "Plant Moisture"
+    unit_of_measurement: "%"
 
   - platform: wunderground
     api_key: !secret wunderground_key
@@ -235,6 +246,37 @@ sensor:
       - wind_dir
       - wind_gust_kph
       - wind_kph
+
+  - platform: darksky
+    api_key: !secret darksky_key
+    latitude: !secret latitude
+    longitude: !secret longitude
+    update_interval:
+      minutes: 10
+    monitored_conditions:
+      - summary
+      - icon
+      - nearest_storm_distance
+      - precip_type
+      - precip_intensity
+      - precip_probability
+      - temperature
+      - apparent_temperature
+      - dew_point
+      - wind_speed
+      - wind_bearing
+      - pressure
+      - visibility
+      - humidity
+      - cloud_cover
+      - minutely_summary
+      - hourly_summary
+      - daily_summary
+      - temperature_min
+      - temperature_max
+      - apparent_temperature_min
+      - apparent_temperature_max
+      - precip_intensity_max
 
   - platform: systemmonitor
     resources:
@@ -330,6 +372,51 @@ light:
   #   brightness_command_topic: "hexacompy/monitor/MEDEL/brightness/command"
   #   brightness_state_topic: "hexacompy/monitor/MEDEL/brightness/state"
 
+  - platform: mqtt_json
+    name: Work Room
+    command_topic: "devices/limitless/0x3801/rgb_cct/1/command"
+    state_topic: "devices/limitless/0x3801/rgb_cct/1/state"
+    brightness: true
+    color_temp: true
+    rgb: true
+
+  - platform: mqtt_json
+    name: Hexacompy Case
+    command_topic: "devices/limitless/0x3801/rgb_cct/2/command"
+    state_topic: "devices/limitless/0x3801/rgb_cct/2/state"
+    brightness: true
+    rgb: true
+
+  - platform: mqtt_json
+    name: Safari
+    command_topic: "devices/limitless/0x3802/rgb_cct/1/command"
+    state_topic: "devices/limitless/0x3802/rgb_cct/1/state"
+    brightness: true
+    color_temp: true
+    rgb: true
+
+  - platform: mqtt_json
+    name: Tall Top
+    command_topic: "devices/limitless/0x3803/rgbw/2/command"
+    state_topic: "devices/limitless/0x3803/rgbw/2/state"
+    brightness: true
+    rgb: true
+
+  - platform: mqtt_json
+    name: Tall Bottom
+    command_topic: "devices/limitless/0x3803/rgbw/1/command"
+    state_topic: "devices/limitless/0x3803/rgbw/1/state"
+    brightness: true
+    rgb: true
+
+  - platform: mqtt_json
+    name: Death Star
+    command_topic: "devices/limitless/0x3804/rgbw/1/command"
+    state_topic: "devices/limitless/0x3804/rgbw/1/state"
+    brightness: true
+    color_temp: true
+    rgb: true
+
   - platform: limitlessled
     bridges:
 
@@ -340,15 +427,15 @@ light:
         - number: 1
           type: bridge-led
           name: Bridge Light
-        - number: 1
-          type: rgbww
-          name: Safari
+        # - number: 1
+        #   type: rgbww
+        #   name: Safari
         - number: 2
           type: rgbww
           name: Kitchen
-        - number: 3
-          type: rgbww
-          name: Work Room
+        # - number: 3
+        #   type: rgbww
+        #   name: Work Room
         - number: 4
           type: rgbww
           name: Bed Strip
@@ -358,15 +445,15 @@ light:
         port: 8899
         version: 5
         groups:
-        - number: 1
-          type: rgbw
-          name: Tall Top
-        - number: 2
-          type: rgbw
-          name: Tall Bottom
-        - number: 3
-          type: rgbw
-          name: Death Star
+        # - number: 1
+        #   type: rgbw
+        #   name: Death Star
+        # - number: 2
+        #   type: rgbw
+        #   name: Tall Top
+        # - number: 3
+        #   type: rgbw
+        #   name: Tall Bottom
         - number: 4
           type: rgbw
           name: Infinity
@@ -402,6 +489,16 @@ mqtt:
 # ╚══════╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚══════╝╚══════╝
                                                   
 scene:
+  - name: Movie Time Start
+    entities:
+      light.safari: off
+      light.tall_top: off
+      light.tall_bottom: on
+  - name: Movie Time End
+    entities:
+      light.safari: on
+      light.tall_top: off
+      light.tall_bottom: off
   - name: Bed Time
     entities:
       group.all_lights: off
