@@ -1,0 +1,104 @@
+title: Home
+widget_dimensions: [120, 120]
+widget_margins: [5, 5]
+columns: 3
+
+bed_time:
+    widget_type: scene
+    title: Bed Time
+    entity: scene.bed_time
+    icon_on: mdi-dots-horizontal
+    icon_off: mdi-weather-night
+
+sleep:
+    widget_type: scene
+    title: Sleep
+    entity: scene.sleep
+    icon_on: mdi-dots-horizontal
+    icon_off: mdi-sleep
+
+morning:
+    widget_type: scene
+    title: Morning
+    entity: scene.morning
+    icon_on: mdi-dots-horizontal
+    icon_off: mdi-weather-sunset-up
+
+
+bedroom:
+    widget_type: switch
+    title: Bedroom
+    entity: group.bedroom
+    icon_on: mdi-hotel
+    icon_off: mdi-hotel
+
+living_room:
+    widget_type: switch
+    title: Living Room
+    entity: group.living_room
+    icon_on: mdi-sofa
+    icon_off: mdi-sofa
+
+work_room:
+    widget_type: switch
+    title: Work Room
+    entity: group.work_room
+    icon_on: mdi-monitor
+    icon_off: mdi-monitor
+
+
+safari:
+    widget_type: light
+    title: Safari
+    entity: light.safari
+    icon_on: mdi-ceiling-light
+    icon_off: mdi-ceiling-light
+
+top:
+    widget_type: light
+    title: Top
+    entity: light.tall_top
+    icon_on: mdi-lightbulb
+    icon_off: mdi-lightbulb-outline
+
+bottom:
+    widget_type: light
+    title: Bottom
+    entity: light.tall_bottom
+    icon_on: mdi-lightbulb
+    icon_off: mdi-lightbulb-outline
+
+
+
+infinity:
+    widget_type: light
+    title: Infinity
+    entity: light.infinity
+    icon_on: mdi-infinity
+    icon_off: mdi-infinity
+
+death_star:
+    widget_type: light
+    title: Death Star
+    entity: light.death_star
+    icon_on: mdi-star
+    icon_off: mdi-star
+
+bed_strip:
+    widget_type: light
+    title: Strip
+    entity: light.bed_strip
+    icon_on: mdi-led-strip
+    icon_off: mdi-led-strip
+
+autom:
+    widget_type: switch
+    entity: automation.radiator_off_at_night
+
+layout:
+    - sensor.dark_sky_hourly_summary(3x1)
+    - bed_time, sleep, morning
+    - living_room, work_room, bedroom
+    - safari, top, bottom
+    - death_star, infinity, bed_strip
+    - autom

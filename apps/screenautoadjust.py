@@ -1,12 +1,11 @@
-import appdaemon.appapi as appapi
-
+import appdaemon.plugins.hass.hassapi as hass
 #
 # Screen Auto Adjust App
 #
 # Args:
 #
 
-class ScreenAutoAdjust(appapi.AppDaemon):
+class ScreenAutoAdjust(hass.Hass):
 
   light_sensor = "sensor.light"
   switch_check = "switch.hexacompy_monitors"
@@ -38,5 +37,4 @@ class ScreenAutoAdjust(appapi.AppDaemon):
 
   def screen_adjust(self, screen):
     self.screen_last_value = screen
-    self.call_service("light/turn_on", entity_id = self.screen_light, brightness
- = screen)
+    self.call_service("light/turn_on", entity_id = self.screen_light, brightness = screen)

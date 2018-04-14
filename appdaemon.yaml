@@ -1,7 +1,14 @@
-AppDaemon:
+log:
   logfile: STDOUT
-  threads: 10
 
-HASS:
-  ha_url: !secret api_url
-  ha_key: !secret api_password
+appdaemon:
+  threads: 10
+  plugins:
+    HASS:
+      type: hass
+      ha_url: !secret api_url
+      ha_key: !secret api_password
+
+hadashboard:
+  dash_url: http://192.168.1.12:5050
+

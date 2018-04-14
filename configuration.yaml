@@ -43,6 +43,7 @@ group:
     name: Work Room
     entities:
       - light.work_room
+      - light.edgy
       - light.hexacompy_case
       - switch.hexacompy_monitors
       
@@ -51,7 +52,6 @@ group:
     entities:
       - light.death_star
       - light.infinity
-      - light.bed_strip
 
   bathroom:
     name: Bathroom
@@ -96,7 +96,7 @@ group:
     control: hidden
     entities:
       - group.kitchen
-      - group.work_room
+      # - group.work_room
       - group.bedroom
 
 
@@ -199,6 +199,11 @@ sensor:
   - platform: mqtt
     state_topic: "devices/envsense/temperature/value"
     name: "Temp"
+    unit_of_measurement: "°C"
+
+  - platform: mqtt
+    state_topic: "devices/envsense/temperature/valueRaw"
+    name: "Temp (Raw)"
     unit_of_measurement: "°C"
     # expire_after: 300
 
@@ -381,6 +386,13 @@ light:
     rgb: true
 
   - platform: mqtt_json
+    name: Edgy
+    command_topic: "devices/limitless/0x3801/rgbw/3/command"
+    state_topic: "devices/limitless/0x3801/rgbw/3/state"
+    brightness: true
+    rgb: true
+
+  - platform: mqtt_json
     name: Hexacompy Case
     command_topic: "devices/limitless/0x3801/rgb_cct/2/command"
     state_topic: "devices/limitless/0x3801/rgb_cct/2/state"
@@ -411,8 +423,8 @@ light:
 
   - platform: mqtt_json
     name: Death Star
-    command_topic: "devices/limitless/0x3804/rgbw/1/command"
-    state_topic: "devices/limitless/0x3804/rgbw/1/state"
+    command_topic: "devices/limitless/0x3804/rgb_cct/1/command"
+    state_topic: "devices/limitless/0x3804/rgb_cct/1/state"
     brightness: true
     color_temp: true
     rgb: true
@@ -501,14 +513,17 @@ scene:
       light.tall_bottom: off
   - name: Bed Time
     entities:
-      group.all_lights: off
-      group.all_switches: off
-      group.bedroom: on
+      group.living_room: off
+      group.kitchen: off
+      group.work_room: off
+      light.infinity: on
   - name: Sleep
     entities:
       group.all_lights: off
       group.all_switches: off
   - name: Morning
     entities:
-      group.bedroom: on
+      light.infinity:
+        state: on
+        transition: 300
 

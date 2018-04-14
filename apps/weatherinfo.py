@@ -1,4 +1,4 @@
-import appdaemon.appapi as appapi
+import appdaemon.plugins.hass.hassapi as hass
 
 #
 # Weather to InfoMatrix App
@@ -6,7 +6,7 @@ import appdaemon.appapi as appapi
 # Args:
 #
 
-class WeatherInfo(appapi.AppDaemon):
+class WeatherInfo(hass.Hass):
 
   icon_to_unicode = {
     "clear-day": "🌣",
