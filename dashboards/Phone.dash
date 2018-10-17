@@ -68,8 +68,6 @@ bottom:
     icon_on: mdi-lightbulb
     icon_off: mdi-lightbulb-outline
 
-
-
 infinity:
     widget_type: light
     title: Infinity
@@ -91,9 +89,13 @@ bed_strip:
     icon_on: mdi-led-strip
     icon_off: mdi-led-strip
 
-autom:
+radiator:
     widget_type: switch
-    entity: automation.radiator_off_at_night
+    title: Radiator
+    entity: switch.radiator
+    icon_on: mdi-radiator
+    icon_off: mdi-radiator
+
 
 layout:
     - sensor.dark_sky_hourly_summary(3x1)
@@ -101,4 +103,4 @@ layout:
     - living_room, work_room, bedroom
     - safari, top, bottom
     - death_star, infinity, bed_strip
-    - autom
+    - radiator
