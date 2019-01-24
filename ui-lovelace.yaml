@@ -1,0 +1,14 @@
+title: My Awesome Home
+views:
+    # View tab title.
+  - id: 0  # Automatically created id
+    title: Example
+    cards:
+      - id: 633ede736d78408eb7bb98e341a082d2  # Automatically created id
+        type: light
+        entity: light.edgy
+
+      - id: d938fd4bd16942c5b4292a0247bb704f  # Automatically created id
+        type: light
+        entity: light.work_room
+

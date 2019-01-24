@@ -42,6 +42,30 @@
     - service: homeassistant.turn_off
       entity_id: group.lights_off_startup
 
+# - id: bedroom_light_link_on
+#   alias: "Bedroom light link on turn on"
+#   trigger:
+#     platform: state
+#     entity_id: light.death_star
+#     to: 'on'
+#   action:
+#     service: light.turn_on
+#     entity_id: light.infinity
+
+# - id: bedroom_light_link_off
+#   alias: "Bedroom light link on turn off"
+#   trigger:
+#     - platform: state
+#       entity_id: light.death_star
+#       to: 'off'
+#     - platform: state
+#       entity_id: light.death_star
+#       to: 'unavailable'
+#   action:
+#     service: light.turn_off
+#     entity_id: light.infinity
+
+
 - id: bedroom_on
   alias: "Bedroom lights on"
   trigger:
@@ -98,6 +122,76 @@
   action:
     service: scene.turn_on
     entity_id: scene.sleep
+
+- id: plant_problem
+  alias: "Plant problem"
+  trigger:
+
+    - platform: state
+      entity_id: plant.kentia
+
+    - platform: state
+      entity_id: plant.test_plant
+    #   from: 'ok'
+    #   to: 'problem'
+
+    - platform: state
+      entity_id: input_boolean.notify_test
+      from: 'off'
+      to: 'on'
+
+  condition:
+    condition: template
+    # value_template: "{{ trigger.to_state.attributes.problem != 'none' }}"
+    value_template: "{{ trigger.from_state.attributes.problem != trigger.to_state.attributes.problem }}"
+
+  action:
+    service: rest_command.discord_webhook
+    data_template:
+      username: "{{ trigger.to_state.name }}"
+      message: >
+        {% set state = trigger.to_state %}
+        {% set attr = state.attributes %}
+        {% set problem = attr.problem %}
+        {% set unit = attr.unit_of_measurement_dict %}
+
+        {%- if 'none' in problem -%}
+            {{ "\U0001F44D" }} I'm good now, thanks!
+        {% endif %}
+        
+        {%- if 'moisture low' in problem -%}
+            {{ "\U0001F4A7" }} Thirsty! I'm at {{ attr.moisture }}{{ unit.moisture }}{{ "\n" }}
+        {%- elif 'moisture high' in problem -%}
+            {{ "\U0001F4A7" }} I have enough water for now, thanks! I'm at {{ attr.moisture }}{{ unit.moisture }}{{ "\n" }}
+        {%- endif -%}
+
+        {%- if 'conductivity low' in problem -%}
+            {{ "\U0001F4A9" }} Hungry! I'm at {{ attr.conductivity }}{{ unit.conductivity }}{{ "\n" }}
+        {%- elif 'conductivity high' in problem -%}
+            {{ "\U0001F4A9" }} Ugh, too full! I'm at {{ attr.conductivity }}{{ unit.conductivity }}{{ "\n" }}
+        {%- endif -%}
+
+        {%- if 'temperature low' in problem -%}
+            {{ "\U0001F321" }} Brr, freezing my plants off here! I'm at {{ attr.temperature }}{{ unit.temperature }}{{ "\n" }}
+        {%- elif 'temperature high' in problem -%}
+            {{ "\U0001F321" }} It's a bit stuffy! I'm at {{ attr.temperature }}{{ unit.temperature }}{{ "\n" }}
+        {%- endif -%}
+
+        {%- if 'brightness low' in problem -%}
+            {{ "\U00002600" }} It's so dark here. I'm at {{ attr.brightness }}{{ unit.brightness }}{{ "\n" }}
+        {%- elif 'brightness high' in problem -%}
+            {{ "\U00002600" }} It's way too hot for me! I'm at {{ attr.brightness }}{{ unit.brightness }}{{ "\n" }}
+        {%- endif -%}
+
+
+      # Moisture: {{ state.moisture }}{{ state.unit_of_measurement_dict.moisture }}
+      # Temperature: {{ state.temperature }}{{ state.unit_of_measurement_dict.temperature }}
+      # Conductivity: {{ state.conductivity }}{{ state.unit_of_measurement_dict.conductivity }}
+      # Light: {{ state.brightness }}{{ state.unit_of_measurement_dict.brightness }}
+      # {% set state = states.plant.kentia %}
+      # {% set state = states[trigger.to_state.domain][trigger.to_state.object_id] %}
+      # target: [ 141214431962071040 ]
+
 
 # - alias: "Turn on lights on Hexacompy wakeup"
 #   trigger:

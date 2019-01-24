@@ -72,11 +72,11 @@ group:
   rpi2:
     name: Raspberry Pi 2
     entities:
-      - sensor.cpu_use
+      - sensor.processor_use
       - sensor.disk_free_
       - sensor.ram_free
-      - sensor.received_eth0
-      - sensor.sent_eth0
+      - sensor.network_in_eth0
+      - sensor.network_out_eth0
 
   limitless:
     name: LimitlessLED Lights
@@ -163,6 +163,26 @@ sun:
 
 
 
+input_boolean:
+  notify_test:
+    name: Test notification
+    initial: off
+    icon: mdi:test-tube
+
+rest_command:
+  discord_webhook:
+    url: !secret discord_webhook
+    method: POST
+    headers: 
+      Accept: 'application/json, text/html'
+      Content-Type: "application/json"
+    payload: >
+      {
+        "username": "{{ username }}",
+        "content": {{ message | tojson }},
+        "tts": {{ tts | default("true") }}
+      }
+
 # ███████╗███████╗███╗   ██╗███████╗ ██████╗ ██████╗ ███████╗
 # ██╔════╝██╔════╝████╗  ██║██╔════╝██╔═══██╗██╔══██╗██╔════╝
 # ███████╗█████╗  ██╔██╗ ██║███████╗██║   ██║██████╔╝███████╗
@@ -194,7 +214,160 @@ binary_sensor:
     payload_on: 'true'
     payload_off: 'false'
 
+
+plant:
+  kentia:
+    sensors:
+      moisture: sensor.kentia_moisture
+      temperature: sensor.kentia_temperature
+      conductivity: sensor.kentia_conductivity
+      brightness: sensor.kentia_light_intensity
+    min_moisture: 10
+    max_moisture: 60
+    min_conductivity: 350
+    max_conductivity: 2000
+    min_temperature: 8
+    max_temperature: 32
+    # min_brightness: 1500
+    max_brightness: 25000
+
+  test_plant:
+    sensors:
+      moisture: sensor.test_plant_moisture
+      temperature: sensor.test_plant_temperature
+      conductivity: sensor.test_plant_conductivity
+      brightness: sensor.test_plant_light_intensity
+    min_moisture: 10
+    max_moisture: 60
+    min_conductivity: 350
+    max_conductivity: 2000
+    min_temperature: 8
+    max_temperature: 32
+    min_brightness: 1500
+    max_brightness: 25000
+
 sensor:
+
+  - platform: mqtt
+    name: "Open MQTT Gateway"
+    state_topic: "home/OpenMQTTGateway/SYStoMQTT"
+    unit_of_measurement: 'dB'
+    value_template: "{{ value_json.rssi }}"
+    availability_topic: "home/OpenMQTTGateway/LWT"
+    payload_available: "online"
+    payload_not_available: "offline"
+    icon: "mdi:wifi"
+    json_attributes:
+      - uptime
+      - freeMem
+      - SSID
+      - modules
+
+  - platform: mqtt
+    name: test_plant_temperature
+    unit_of_measurement: "°C"
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "test/plant/tem"
+
+  - platform: mqtt
+    name: test_plant_moisture
+    unit_of_measurement: '%'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "test/plant/moi"
+
+  - platform: mqtt
+    name: test_plant_light_intensity
+    unit_of_measurement: lux
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "test/plant/lux"
+
+  - platform: mqtt
+    name: test_plant_conductivity
+    unit_of_measurement: 'µS/cm'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "test/plant/fer"
+
+
+
+  - platform: mqtt
+    name: kentia_temperature
+    unit_of_measurement: "°C"
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D665CDC/tem"
+
+  - platform: mqtt
+    name: kentia_moisture
+    unit_of_measurement: '%'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D665CDC/moi"
+
+  - platform: mqtt
+    name: kentia_light_intensity
+    unit_of_measurement: lux
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D665CDC/lux"
+
+  - platform: mqtt
+    name: kentia_conductivity
+    unit_of_measurement: 'µS/cm'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D665CDC/fer"
+
+  - platform: mqtt
+    name: kentia_rssi
+    unit_of_measurement: 'dB'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D665CDC/rssi"
+    
+  - platform: mqtt
+    name: kentia_distance
+    unit_of_measurement: 'm'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D665CDC/distance"
+
+
+
+
+  # - platform: mqtt
+  #   name: kentia_temperature
+  #   unit_of_measurement: "°C"
+  #   force_update: true
+  #   expire_after: 21600 # 6 hours
+  #   state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D665CDC/tem"
+  # - platform: mqtt
+  #   name: kentia_moisture
+  #   force_update: true
+  #   expire_after: 21600 # 6 hours
+  #   state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D665CDC/moi"
+  # - platform: mqtt
+  #   name: kentia_light_intensity
+  #   unit_of_measurement: lux
+  #   force_update: true
+  #   expire_after: 21600 # 6 hours
+  #   state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D665CDC/lux"
+  # - platform: mqtt
+  #   name: kentia_conductivity
+  #   force_update: true
+  #   expire_after: 21600 # 6 hours
+  #   state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D665CDC/fer"
+
+
+
+
+
+
+
+
 
   - platform: mqtt
     state_topic: "devices/envsense/temperature/value"
@@ -277,10 +450,10 @@ sensor:
       - minutely_summary
       - hourly_summary
       - daily_summary
-      - temperature_min
-      - temperature_max
-      - apparent_temperature_min
-      - apparent_temperature_max
+      - temperature_low
+      - temperature_high
+      - apparent_temperature_low
+      - apparent_temperature_high
       - precip_intensity_max
 
   - platform: systemmonitor
@@ -300,8 +473,8 @@ sensor:
 tts:
   platform: google
 
-
-
+tradfri:
+  host: 192.168.1.14
 
 snips:
 
@@ -385,12 +558,12 @@ light:
     color_temp: true
     rgb: true
 
-  - platform: mqtt_json
-    name: Edgy
-    command_topic: "devices/limitless/0x3801/rgbw/3/command"
-    state_topic: "devices/limitless/0x3801/rgbw/3/state"
-    brightness: true
-    rgb: true
+  # - platform: mqtt_json
+  #   name: Edgy
+  #   command_topic: "devices/limitless/0x3801/rgbw/3/command"
+  #   state_topic: "devices/limitless/0x3801/rgbw/3/state"
+  #   brightness: true
+  #   rgb: true
 
   - platform: mqtt_json
     name: Hexacompy Case
@@ -421,13 +594,13 @@ light:
     brightness: true
     rgb: true
 
-  - platform: mqtt_json
-    name: Death Star
-    command_topic: "devices/limitless/0x3804/rgb_cct/1/command"
-    state_topic: "devices/limitless/0x3804/rgb_cct/1/state"
-    brightness: true
-    color_temp: true
-    rgb: true
+  # - platform: mqtt_json
+  #   name: Death Star
+  #   command_topic: "devices/limitless/0x3804/rgb_cct/1/command"
+  #   state_topic: "devices/limitless/0x3804/rgb_cct/1/state"
+  #   brightness: true
+  #   color_temp: true
+  #   rgb: true
 
   - platform: limitlessled
     bridges:

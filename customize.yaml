@@ -18,6 +18,11 @@ binary_sensor.top_left:
 binary_sensor.top_right:
   hidden: true
 
+# Plants
+
+plant.kentia:
+  friendly_name: Kentia
+
 # Weather
 
 sensor.pws_alerts:
