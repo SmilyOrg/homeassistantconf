@@ -131,6 +131,15 @@
       entity_id: plant.kentia
 
     - platform: state
+      entity_id: plant.poinsettia
+
+    - platform: state
+      entity_id: plant.pachira
+
+    - platform: state
+      entity_id: plant.litchi
+
+    - platform: state
       entity_id: plant.test_plant
     #   from: 'ok'
     #   to: 'problem'

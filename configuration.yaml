@@ -222,13 +222,62 @@ plant:
       temperature: sensor.kentia_temperature
       conductivity: sensor.kentia_conductivity
       brightness: sensor.kentia_light_intensity
-    min_moisture: 10
+    # min_moisture: 10
+    min_moisture: 20
     max_moisture: 60
     min_conductivity: 350
     max_conductivity: 2000
     min_temperature: 8
     max_temperature: 32
     # min_brightness: 1500
+    max_brightness: 25000
+
+  poinsettia:
+    sensors:
+      moisture: sensor.poinsettia_moisture
+      temperature: sensor.poinsettia_temperature
+      conductivity: sensor.poinsettia_conductivity
+      brightness: sensor.poinsettia_light_intensity
+    # min_moisture: 15
+    min_moisture: 25
+    max_moisture: 60
+    min_conductivity: 350
+    max_conductivity: 2000
+    min_temperature: 8
+    max_temperature: 35
+    # min_brightness: 1500
+    max_brightness: 30000
+
+  pachira:
+    sensors:
+      moisture: sensor.pachira_moisture
+      temperature: sensor.pachira_temperature
+      conductivity: sensor.pachira_conductivity
+      brightness: sensor.pachira_light_intensity
+    # min_moisture: 15
+    min_moisture: 20
+    max_moisture: 60
+    min_conductivity: 350
+    max_conductivity: 2000
+    min_temperature: 10
+    max_temperature: 32
+    # min_brightness: 1200
+    max_brightness: 40000
+
+  litchi:
+    sensors:
+      moisture: sensor.litchi_moisture
+      temperature: sensor.litchi_temperature
+      conductivity: sensor.litchi_conductivity
+      brightness: sensor.litchi_light_intensity
+    # min_moisture: 15
+    min_moisture: 20
+    max_moisture: 45
+    min_conductivity: 350
+    max_conductivity: 2000
+    min_temperature: 8
+    max_temperature: 32
+    # min_brightness: 1200
     max_brightness: 25000
 
   test_plant:
@@ -293,6 +342,7 @@ sensor:
 
 
 
+
   - platform: mqtt
     name: kentia_temperature
     unit_of_measurement: "°C"
@@ -334,6 +384,142 @@ sensor:
     force_update: true
     expire_after: 21600 # 6 hours
     state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D665CDC/distance"
+
+
+
+
+  - platform: mqtt
+    name: poinsettia_temperature
+    unit_of_measurement: "°C"
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A0424/tem"
+
+  - platform: mqtt
+    name: poinsettia_moisture
+    unit_of_measurement: '%'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A0424/moi"
+
+  - platform: mqtt
+    name: poinsettia_light_intensity
+    unit_of_measurement: lux
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A0424/lux"
+
+  - platform: mqtt
+    name: poinsettia_conductivity
+    unit_of_measurement: 'µS/cm'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A0424/fer"
+
+  - platform: mqtt
+    name: poinsettia_rssi
+    unit_of_measurement: 'dB'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A0424/rssi"
+    
+  - platform: mqtt
+    name: poinsettia_distance
+    unit_of_measurement: 'm'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A0424/distance"
+
+
+
+  - platform: mqtt
+    name: pachira_temperature
+    unit_of_measurement: "°C"
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A1233/tem"
+
+  - platform: mqtt
+    name: pachira_moisture
+    unit_of_measurement: '%'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A1233/moi"
+
+  - platform: mqtt
+    name: pachira_light_intensity
+    unit_of_measurement: lux
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A1233/lux"
+
+  - platform: mqtt
+    name: pachira_conductivity
+    unit_of_measurement: 'µS/cm'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A1233/fer"
+
+  - platform: mqtt
+    name: pachira_rssi
+    unit_of_measurement: 'dB'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A1233/rssi"
+    
+  - platform: mqtt
+    name: pachira_distance
+    unit_of_measurement: 'm'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A1233/distance"
+
+
+
+
+  - platform: mqtt
+    name: litchi_temperature
+    unit_of_measurement: "°C"
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A36E8/tem"
+
+  - platform: mqtt
+    name: litchi_moisture
+    unit_of_measurement: '%'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A36E8/moi"
+
+  - platform: mqtt
+    name: litchi_light_intensity
+    unit_of_measurement: lux
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A36E8/lux"
+
+  - platform: mqtt
+    name: litchi_conductivity
+    unit_of_measurement: 'µS/cm'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A36E8/fer"
+
+  - platform: mqtt
+    name: litchi_rssi
+    unit_of_measurement: 'dB'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A36E8/rssi"
+    
+  - platform: mqtt
+    name: litchi_distance
+    unit_of_measurement: 'm'
+    force_update: true
+    expire_after: 21600 # 6 hours
+    state_topic: "home/OpenMQTTGateway/BTtoMQTT/C47C8D6A36E8/distance"
+
+
 
 
 

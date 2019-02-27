@@ -23,6 +23,54 @@ binary_sensor.top_right:
 plant.kentia:
   friendly_name: Kentia
 
+sensor.kentia_temperature:
+  hidden: true
+sensor.kentia_moisture:
+  hidden: true
+sensor.kentia_light_intensity:
+  hidden: true
+sensor.kentia_conductivity:
+  hidden: true
+
+
+plant.poinsettia:
+  friendly_name: Poinsettia
+
+sensor.poinsettia_temperature:
+  hidden: true
+sensor.poinsettia_moisture:
+  hidden: true
+sensor.poinsettia_light_intensity:
+  hidden: true
+sensor.poinsettia_conductivity:
+  hidden: true
+
+
+plant.pachira:
+  friendly_name: Pachira
+
+sensor.pachira_temperature:
+  hidden: true
+sensor.pachira_moisture:
+  hidden: true
+sensor.pachira_light_intensity:
+  hidden: true
+sensor.pachira_conductivity:
+  hidden: true
+
+
+plant.litchi:
+  friendly_name: Litchi
+
+sensor.litchi_temperature:
+  hidden: true
+sensor.litchi_moisture:
+  hidden: true
+sensor.litchi_light_intensity:
+  hidden: true
+sensor.litchi_conductivity:
+  hidden: true
+
 # Weather
 
 sensor.pws_alerts:
